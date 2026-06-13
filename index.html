@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --cream: #FFF9E9;
@@ -1057,11 +1058,64 @@
         });
 
         // ==========================================
-        // Cheeseboy for Hire Backend Integration
+        // Cheeseboy for Hire Backend Integration (Supabase & local fallback)
         // ==========================================
-        const API_URL = 'http://localhost:3000/api';
-        let currentUser = null;
-        let activeResetToken = null;
+        const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
+        const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+
+        let supabaseClient = null;
+        let isLocalMode = true;
+
+        if (SUPABASE_URL && SUPABASE_ANON_KEY && SUPABASE_URL !== 'your_supabase_project_url') {
+            try {
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                isLocalMode = false;
+                console.log('⚡ Connected to Supabase Cloud Database');
+            } catch (err) {
+                console.error('Failed to initialize Supabase. Running in Sandbox Mode:', err);
+            }
+        }
+
+        if (isLocalMode) {
+            console.log('📦 Running in Local Sandbox Mode (Local Storage fallback)');
+            showLocalSandboxBanner();
+        }
+
+        // Display a small subtle banner to let the user know they are in local sandbox mode
+        function showLocalSandboxBanner() {
+            const banner = document.createElement('div');
+            banner.style.position = 'fixed';
+            banner.style.top = '90px';
+            banner.style.right = '20px';
+            banner.style.background = 'rgba(255, 255, 255, 0.9)';
+            banner.style.backdropFilter = 'blur(10px)';
+            banner.style.border = '2.5px solid var(--charcoal)';
+            banner.style.borderRadius = '12px';
+            banner.style.padding = '0.5rem 1rem';
+            banner.style.fontSize = '0.8rem';
+            banner.style.fontWeight = '700';
+            banner.style.zIndex = '99';
+            banner.style.boxShadow = '3px 3px 0 var(--charcoal)';
+            banner.innerHTML = 'Sandbox Mode (Local Storage)';
+            document.body.appendChild(banner);
+        }
+
+        // Toggle visibility of Sign In / Sign Up cards
+        function toggleAuthForms(event, type) {
+            if (event) event.preventDefault();
+            document.getElementById('signin-card').style.display = type === 'signin' ? 'block' : 'none';
+            document.getElementById('signup-card').style.display = type === 'signup' ? 'block' : 'none';
+            document.getElementById('forgot-card').style.display = type === 'forgot' ? 'block' : 'none';
+        }
+
+        // Show Forgot Password step
+        function showForgotPassword(event) {
+            if (event) event.preventDefault();
+            toggleAuthForms(null, 'forgot');
+            document.getElementById('forgot-step1-form').style.display = 'block';
+            document.getElementById('forgot-step2-form').style.display = 'none';
+            document.getElementById('forgot-title').innerText = 'Recover Account';
+        }
 
         // Visual helper for Sandbox mode OTP
         function showSandboxOtpHelper(otp) {
@@ -1086,23 +1140,6 @@
             document.body.appendChild(helper);
         }
 
-        // Toggle visibility of Sign In / Sign Up cards
-        function toggleAuthForms(event, type) {
-            if (event) event.preventDefault();
-            document.getElementById('signin-card').style.display = type === 'signin' ? 'block' : 'none';
-            document.getElementById('signup-card').style.display = type === 'signup' ? 'block' : 'none';
-            document.getElementById('forgot-card').style.display = type === 'forgot' ? 'block' : 'none';
-        }
-
-        // Show Forgot Password step
-        function showForgotPassword(event) {
-            if (event) event.preventDefault();
-            toggleAuthForms(null, 'forgot');
-            document.getElementById('forgot-step1-form').style.display = 'block';
-            document.getElementById('forgot-step2-form').style.display = 'none';
-            document.getElementById('forgot-title').innerText = 'Recover Account';
-        }
-
         // Perform Sign Up
         async function handleSignUp(e) {
             e.preventDefault();
@@ -1112,18 +1149,31 @@
             const password = document.getElementById('signup-password').value;
 
             try {
-                const res = await fetch(`${API_URL}/auth/signup`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, phone, password })
-                });
+                if (isLocalMode) {
+                    const localUsers = JSON.parse(localStorage.getItem('sandbox_users') || '{}');
+                    if (localUsers[email]) throw new Error('Email already registered.');
+                    
+                    localUsers[email] = { name, email, phone, password };
+                    localStorage.setItem('sandbox_users', JSON.stringify(localUsers));
+                    localStorage.setItem('sandbox_session', email);
+                    
+                    alert('Registration successful! (Sandbox mode)');
+                    document.getElementById('signup-form').reset();
+                    checkAuthStatus();
+                } else {
+                    const { data, error } = await supabaseClient.auth.signUp({
+                        email,
+                        password,
+                        options: {
+                            data: { name, phone }
+                        }
+                    });
+                    if (error) throw error;
 
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error || 'Registration failed.');
-
-                alert(data.message);
-                document.getElementById('signup-form').reset();
-                checkAuthStatus();
+                    alert('Verification email sent! Please check your inbox to confirm registration.');
+                    document.getElementById('signup-form').reset();
+                    checkAuthStatus();
+                }
             } catch (err) {
                 alert(err.message);
             }
@@ -1136,17 +1186,21 @@
             const password = document.getElementById('signin-password').value;
 
             try {
-                const res = await fetch(`${API_URL}/auth/signin`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error || 'Sign in failed.');
-
-                document.getElementById('signin-form').reset();
-                checkAuthStatus();
+                if (isLocalMode) {
+                    const localUsers = JSON.parse(localStorage.getItem('sandbox_users') || '{}');
+                    const user = localUsers[email];
+                    if (!user || user.password !== password) {
+                        throw new Error('Invalid email or password.');
+                    }
+                    localStorage.setItem('sandbox_session', email);
+                    document.getElementById('signin-form').reset();
+                    checkAuthStatus();
+                } else {
+                    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                    if (error) throw error;
+                    document.getElementById('signin-form').reset();
+                    checkAuthStatus();
+                }
             } catch (err) {
                 alert(err.message);
             }
@@ -1155,77 +1209,87 @@
         // Perform Log Out
         async function handleLogOut() {
             try {
-                const res = await fetch(`${API_URL}/auth/logout`, { method: 'POST' });
-                const data = await res.json();
-                alert(data.message);
-                checkAuthStatus();
+                if (isLocalMode) {
+                    localStorage.removeItem('sandbox_session');
+                    alert('Logged out successfully.');
+                    checkAuthStatus();
+                } else {
+                    const { error } = await supabaseClient.auth.signOut();
+                    if (error) throw error;
+                    alert('Logged out successfully.');
+                    checkAuthStatus();
+                }
             } catch (err) {
                 console.error('Logout error:', err);
             }
         }
 
-        // Send OTP
+        // Send OTP (Forgot Password)
+        let sandboxOtpCode = null;
+        let sandboxOtpEmail = null;
+
         async function handleSendOtp(e) {
             e.preventDefault();
             const email = document.getElementById('forgot-email').value;
 
             try {
-                const res = await fetch(`${API_URL}/auth/forgot-password`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email })
-                });
+                if (isLocalMode) {
+                    const localUsers = JSON.parse(localStorage.getItem('sandbox_users') || '{}');
+                    if (!localUsers[email]) throw new Error('No account found with this email.');
 
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error || 'Failed to send OTP.');
+                    sandboxOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
+                    sandboxOtpEmail = email;
 
-                alert(data.message);
-                if (data.sandboxOtp) {
-                    showSandboxOtpHelper(data.sandboxOtp);
+                    showSandboxOtpHelper(sandboxOtpCode);
+                    alert('OTP verification code sent! (Sandbox mode: check helper at the bottom-right)');
+
+                    document.getElementById('forgot-step1-form').style.display = 'none';
+                    document.getElementById('forgot-step2-form').style.display = 'block';
+                    document.getElementById('forgot-title').innerText = 'Verify OTP';
+                } else {
+                    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+                        redirectTo: window.location.origin + window.location.pathname + '#reset-password'
+                    });
+                    if (error) throw error;
+
+                    alert('Password reset link has been sent to your email!');
+                    toggleAuthForms(null, 'signin');
                 }
-
-                // Show step 2
-                document.getElementById('forgot-step1-form').style.display = 'none';
-                document.getElementById('forgot-step2-form').style.display = 'block';
-                document.getElementById('forgot-title').innerText = 'Verify OTP';
             } catch (err) {
                 alert(err.message);
             }
         }
 
-        // Verify OTP and Reset Password
+        // Reset Password
         async function handleResetPassword(e) {
             e.preventDefault();
-            const email = document.getElementById('forgot-email').value;
-            const otpCode = document.getElementById('forgot-otp').value;
             const password = document.getElementById('forgot-new-password').value;
 
             try {
-                // 1. Verify OTP first
-                const verifyRes = await fetch(`${API_URL}/auth/verify-otp`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, otpCode })
-                });
+                if (isLocalMode) {
+                    const otpEntered = document.getElementById('forgot-otp').value;
+                    if (otpEntered !== sandboxOtpCode) {
+                        throw new Error('Incorrect OTP code.');
+                    }
 
-                const verifyData = await verifyRes.json();
-                if (!verifyRes.ok) throw new Error(verifyData.error || 'OTP verification failed.');
+                    const localUsers = JSON.parse(localStorage.getItem('sandbox_users') || '{}');
+                    localUsers[sandboxOtpEmail].password = password;
+                    localStorage.setItem('sandbox_users', JSON.stringify(localUsers));
 
-                activeResetToken = verifyData.resetToken;
+                    alert('Password reset successfully! You can now log in.');
+                    document.getElementById('forgot-step2-form').reset();
+                    toggleAuthForms(null, 'signin');
+                } else {
+                    // Supabase recovery reset password logic
+                    const { error } = await supabaseClient.auth.updateUser({ password });
+                    if (error) throw error;
 
-                // 2. Perform reset
-                const resetRes = await fetch(`${API_URL}/auth/reset-password`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password, resetToken: activeResetToken })
-                });
-
-                const resetData = await resetRes.json();
-                if (!resetRes.ok) throw new Error(resetData.error || 'Password reset failed.');
-
-                alert(resetData.message);
-                document.getElementById('forgot-step2-form').reset();
-                toggleAuthForms(null, 'signin');
+                    alert('Password updated successfully! You can now sign in.');
+                    // Clear the hash from the URL
+                    window.location.hash = '';
+                    document.getElementById('forgot-step2-form').reset();
+                    toggleAuthForms(null, 'signin');
+                }
             } catch (err) {
                 alert(err.message);
             }
@@ -1238,20 +1302,39 @@
             const requirements = document.getElementById('job-requirements').value;
 
             try {
-                const res = await fetch(`${API_URL}/jobs`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title, requirements })
-                });
+                if (isLocalMode) {
+                    const email = localStorage.getItem('sandbox_session');
+                    const jobs = JSON.parse(localStorage.getItem('sandbox_jobs') || '[]');
+                    
+                    const newJob = {
+                        id: Math.random().toString(),
+                        user_email: email,
+                        title,
+                        requirements,
+                        status: 'Pending',
+                        auto_response: 'Thank you for the possible employment. Will be in-touch.'
+                    };
+                    
+                    jobs.push(newJob);
+                    localStorage.setItem('sandbox_jobs', JSON.stringify(jobs));
+                    
+                    alert(`💼 CALVIN'S RESPONSE:\n"Thank you for the possible employment. Will be in-touch."`);
+                    document.getElementById('job-form').reset();
+                    fetchJobs();
+                } else {
+                    const { data: { user } } = await supabaseClient.auth.getUser();
+                    if (!user) throw new Error('Not authenticated.');
 
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error || 'Failed to submit job.');
+                    const { error } = await supabaseClient
+                        .from('jobs')
+                        .insert([{ title, requirements, user_id: user.id }]);
+                    
+                    if (error) throw error;
 
-                // Visual alerts of Calvin's auto-response
-                alert(`💼 CALVIN'S RESPONSE:\n"${data.alertResponse}"`);
-                
-                document.getElementById('job-form').reset();
-                fetchJobs();
+                    alert(`💼 CALVIN'S RESPONSE:\n"Thank you for the possible employment. Will be in-touch."`);
+                    document.getElementById('job-form').reset();
+                    fetchJobs();
+                }
             } catch (err) {
                 alert(err.message);
             }
@@ -1260,22 +1343,34 @@
         // Fetch user's jobs list
         async function fetchJobs() {
             try {
-                const res = await fetch(`${API_URL}/jobs`);
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error);
-
                 const jobsList = document.getElementById('jobs-list');
                 const noJobsText = document.getElementById('no-jobs-text');
+                
+                // Clear existing dynamically generated job cards
+                document.querySelectorAll('.glass-job-card').forEach(el => el.remove());
 
-                if (data.jobs.length === 0) {
+                let jobs = [];
+
+                if (isLocalMode) {
+                    const email = localStorage.getItem('sandbox_session');
+                    const allJobs = JSON.parse(localStorage.getItem('sandbox_jobs') || '[]');
+                    jobs = allJobs.filter(j => j.user_email === email);
+                } else {
+                    const { data, error } = await supabaseClient
+                        .from('jobs')
+                        .select('*')
+                        .order('created_at', { ascending: false });
+                    
+                    if (error) throw error;
+                    jobs = data;
+                }
+
+                if (jobs.length === 0) {
                     noJobsText.style.display = 'block';
-                    // Remove existing job cards
-                    document.querySelectorAll('.glass-job-card').forEach(el => el.remove());
                 } else {
                     noJobsText.style.display = 'none';
-                    document.querySelectorAll('.glass-job-card').forEach(el => el.remove());
 
-                    data.jobs.forEach(job => {
+                    jobs.forEach(job => {
                         const card = document.createElement('div');
                         card.className = 'glass-job-card';
                         card.innerHTML = `
@@ -1294,33 +1389,64 @@
 
         // Check active Auth status
         async function checkAuthStatus() {
+            const authContainer = document.getElementById('hire-auth-container');
+            const dashboardContainer = document.getElementById('hire-dashboard-container');
+
             try {
-                const res = await fetch(`${API_URL}/auth/me`);
-                const data = await res.json();
-
-                const authContainer = document.getElementById('hire-auth-container');
-                const dashboardContainer = document.getElementById('hire-dashboard-container');
-
-                if (res.ok && data.user) {
-                    currentUser = data.user;
-                    document.getElementById('dashboard-user-name').innerText = currentUser.name;
-                    authContainer.style.display = 'none';
-                    dashboardContainer.style.block = 'block';
-                    // Fallback to ensure display works correctly
-                    dashboardContainer.style.setProperty('display', 'block', 'important');
-                    fetchJobs();
+                if (isLocalMode) {
+                    const session = localStorage.getItem('sandbox_session');
+                    if (session) {
+                        const users = JSON.parse(localStorage.getItem('sandbox_users') || '{}');
+                        const user = users[session];
+                        document.getElementById('dashboard-user-name').innerText = user.name;
+                        
+                        authContainer.style.display = 'none';
+                        dashboardContainer.style.setProperty('display', 'block', 'important');
+                        fetchJobs();
+                    } else {
+                        authContainer.style.display = 'block';
+                        dashboardContainer.style.display = 'none';
+                    }
                 } else {
-                    currentUser = null;
-                    authContainer.style.display = 'block';
-                    dashboardContainer.style.display = 'none';
-                    toggleAuthForms(null, 'signin');
+                    const { data: { user } } = await supabaseClient.auth.getUser();
+                    if (user) {
+                        const name = user.user_metadata?.name || 'Employer';
+                        document.getElementById('dashboard-user-name').innerText = name;
+                        
+                        authContainer.style.display = 'none';
+                        dashboardContainer.style.setProperty('display', 'block', 'important');
+                        fetchJobs();
+                    } else {
+                        authContainer.style.display = 'block';
+                        dashboardContainer.style.display = 'none';
+                    }
                 }
             } catch (err) {
-                // If API server is not running yet, show the signin form gracefully
-                document.getElementById('hire-auth-container').style.display = 'block';
-                document.getElementById('hire-dashboard-container').style.display = 'none';
-                toggleAuthForms(null, 'signin');
+                authContainer.style.display = 'block';
+                dashboardContainer.style.display = 'none';
             }
+        }
+
+        // Listen for Supabase Authentication State Changes (like password recovery link clicked)
+        if (!isLocalMode && supabaseClient) {
+            supabaseClient.auth.onAuthStateChange((event, session) => {
+                if (event === 'SIGNED_IN') {
+                    checkAuthStatus();
+                } else if (event === 'SIGNED_OUT') {
+                    checkAuthStatus();
+                } else if (event === 'PASSWORD_RECOVERY') {
+                    // Directly display reset password form state
+                    toggleAuthForms(null, 'forgot');
+                    document.getElementById('forgot-step1-form').style.display = 'none';
+                    document.getElementById('forgot-step2-form').style.display = 'block';
+                    document.getElementById('forgot-title').innerText = 'Set New Password';
+                }
+            });
+        }
+
+        // Check password recovery url trigger on initial load
+        if (window.location.hash.includes('type=recovery') && isLocalMode) {
+            alert('Password recovery is handled via email link in Supabase mode.');
         }
 
         // Toggle hire section open and scroll to it when button is clicked
