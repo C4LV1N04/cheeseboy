@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>shehatescalvin — Cheese boy Calvin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #FFF9E9;
+            --cheese: #FFD23F;
+            --cheese-dark: #EEA900;
+            --warm-white: #FFFDF6;
+            --charcoal: #2D2D2D;
+            --soft-gray: #7A7A7A;
+            --border: #2D2D2D;
+            --accent: #FF6B6B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: var(--cream);
+            color: var(--charcoal);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .display, .logo, .btn {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom cursor - Playful cheese */
+        .cursor-dot,
+        .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .cursor-dot {
+            width: 24px;
+            height: 24px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cursor-outline {
+            width: 48px;
+            height: 48px;
+            border: 2.5px dashed var(--cheese-dark);
+            transition: width 0.2s, height 0.2s, background 0.2s, border-color 0.2s;
+        }
+
+        .cursor-outline.hover {
+            width: 68px;
+            height: 68px;
+            border: 2.5px solid var(--accent);
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.2rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(255, 249, 233, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 3px solid var(--charcoal);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            color: var(--charcoal);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.2s;
+        }
+
+        .logo:hover {
+            transform: scale(1.05) rotate(-2deg);
+        }
+
+        .logo::before {
+            content: '🧀';
+            font-size: 1.4rem;
+            display: inline-block;
+            transition: transform 0.3s;
+        }
+
+        .logo:hover::before {
+            animation: bounce 0.5s ease infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0) scale(1); }
+            to { transform: translateY(-6px) scale(1.1); }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--soft-gray);
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: color 0.3s, transform 0.2s;
+            display: inline-block;
+        }
+
+        .nav-links a:hover {
+            color: var(--charcoal);
+            transform: translateY(-2px) scale(1.05);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .floating-cheese {
+            position: absolute;
+            font-size: 2.5rem;
+            opacity: 0.25;
+            animation: float 6s ease-in-out infinite;
+            pointer-events: none;
+            filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.1));
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(15deg); }
+        }
+
+        .hero h1 {
+            font-size: clamp(3.5rem, 9vw, 7.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+            transform: rotate(-1deg);
+        }
+
+        .hero h1 .highlight {
+            color: var(--charcoal);
+            background: var(--cheese);
+            padding: 0.1rem 1rem;
+            border-radius: 20px;
+            border: 3px solid var(--charcoal);
+            box-shadow: 6px 6px 0px var(--charcoal);
+            display: inline-block;
+            transform: rotate(2deg);
+        }
+
+        .hero-subtitle {
+            font-size: 1.35rem;
+            color: var(--charcoal);
+            max-width: 550px;
+            margin-bottom: 2.5rem;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.4);
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            border: 2px dashed rgba(0,0,0,0.15);
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 1.1rem 2.8rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 3px solid var(--charcoal);
+            box-shadow: 5px 5px 0px var(--charcoal);
+        }
+
+        .btn-primary {
+            background: var(--cheese);
+            color: var(--charcoal);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent);
+            color: var(--cream);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 8px 8px 0px var(--charcoal);
+        }
+
+        .btn-outline {
+            border-color: var(--charcoal);
+            color: var(--charcoal);
+            background: var(--warm-white);
+        }
+
+        .btn-outline:hover {
+            background: var(--charcoal);
+            color: var(--cream);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 8px 8px 0px var(--charcoal);
+        }
+
+        /* TikTok Section */
+        .tiktok-section {
+            padding: 6rem 2rem;
+            background: var(--warm-white);
+            border-top: 3px solid var(--charcoal);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: var(--soft-gray);
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .tiktok-embed {
+            background: #000;
+            border: 3px solid var(--charcoal);
+            border-radius: 28px;
+            overflow: hidden;
+            max-width: 500px;
+            margin: 0 auto;
+            box-shadow: 10px 10px 0px var(--charcoal);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .tiktok-embed:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 16px 16px 0px var(--charcoal);
+        }
+
+        .tiktok-embed iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+
+        .tiktok-handle {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 1.25rem;
+        }
+
+        .tiktok-handle a {
+            color: var(--charcoal);
+            text-decoration: none;
+            font-weight: 700;
+            border-bottom: 3px solid var(--cheese);
+            transition: all 0.3s;
+        }
+
+        .tiktok-handle a:hover {
+            border-bottom-width: 6px;
+            background: rgba(255, 210, 63, 0.15);
+            padding: 0 0.2rem;
+            border-radius: 4px;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            padding: 6rem 2rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .card {
+            background: var(--warm-white);
+            border: 3px solid var(--charcoal);
+            border-radius: 28px;
+            padding: 2.5rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 6px 6px 0px var(--charcoal);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--cheese);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+            transform-origin: left;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02) rotate(-1deg);
+            box-shadow: 12px 12px 0px var(--charcoal);
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-icon {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        .card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        .card p {
+            color: var(--charcoal);
+            font-size: 1rem;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        /* Marquee - Playful tilt */
+        .marquee {
+            background: var(--charcoal);
+            color: var(--cream);
+            padding: 1.5rem 0;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            border-top: 3px solid var(--charcoal);
+            border-bottom: 3px solid var(--charcoal);
+            transform: rotate(-1.5deg) scale(1.02);
+            margin: 3rem 0;
+            z-index: 5;
+            box-shadow: 0 8px 0px rgba(0,0,0,0.05);
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 25s linear infinite;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .marquee-content span {
+            margin: 0 2rem;
+            opacity: 0.8;
+        }
+
+        .marquee-content span:nth-child(odd) {
+            opacity: 1;
+            color: var(--cheese);
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 2rem;
+            text-align: center;
+            background: var(--warm-white);
+            border-top: 3px solid var(--charcoal);
+        }
+
+        .footer-logo {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: var(--charcoal);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: color 0.3s, transform 0.2s;
+            display: inline-block;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .copyright {
+            color: var(--soft-gray);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 1.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+
+            .cursor-dot, .cursor-outline {
+                display: none;
+            }
+            
+            .marquee {
+                transform: none;
+                margin: 2rem 0;
+            }
+        }
+
+        /* Scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Playful Video Container */
+        .video-container {
+            width: 100%;
+            height: 200px;
+            background: #000;
+            border: 3px solid var(--charcoal);
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px var(--charcoal);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .video-container:hover {
+            transform: scale(1.02);
+            box-shadow: 6px 6px 0px var(--charcoal);
+        }
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        .video-container:hover .video-overlay {
+            background: rgba(0, 0, 0, 0.15);
+        }
+        .video-play-btn {
+            background: var(--cheese);
+            color: var(--charcoal);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: 3px solid var(--charcoal);
+            box-shadow: 3px 3px 0 var(--charcoal);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .video-container:hover .video-play-btn {
+            transform: scale(1.15) rotate(-5deg);
+        }
+        .video-label {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(45, 45, 45, 0.95);
+            color: var(--cream);
+            padding: 0.25rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border: 1.5px solid var(--charcoal);
+            z-index: 2;
+        }
+
+        /* Glassmorphic Hire Panel & Form Styles */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 3px solid var(--charcoal);
+            border-radius: 28px;
+            box-shadow: 8px 8px 0px var(--charcoal);
+            padding: 2.5rem;
+            position: relative;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--charcoal);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--charcoal);
+            background: rgba(255, 255, 255, 0.85);
+            border: 3px solid var(--charcoal);
+            border-radius: 16px;
+            box-shadow: inset 2px 2px 0px rgba(0,0,0,0.05);
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            background: #fff;
+            border-color: var(--cheese-dark);
+            box-shadow: 3px 3px 0px var(--charcoal);
+        }
+
+        /* Glass Job Item inside list */
+        .glass-job-card {
+            background: rgba(255, 255, 255, 0.55);
+            border: 3px solid var(--charcoal);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 4px 4px 0px var(--charcoal);
+            position: relative;
+            text-align: left;
+            transition: transform 0.2s;
+        }
+        .glass-job-card:hover {
+            transform: translateY(-2px);
+        }
+        .job-status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border: 2px solid var(--charcoal);
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            box-shadow: 2px 2px 0px var(--charcoal);
+            float: right;
+        }
+        .job-status-pending {
+            background: var(--cheese);
+            color: var(--charcoal);
+        }
+        .job-auto-response {
+            margin-top: 1rem;
+            padding: 0.8rem 1.2rem;
+            background: rgba(255, 210, 63, 0.15);
+            border: 2.5px dashed var(--charcoal);
+            border-radius: 14px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--charcoal);
+            position: relative;
+        }
+        .job-auto-response::before {
+            content: '💬';
+            margin-right: 0.4rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="#" class="logo">shehatescalvin</a>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#content">Content</a></li>
+            <li><a href="#tiktok">TikTok</a></li>
+            <li><a href="#connect">Connect</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero" id="home">
+        <!-- Floating cheese decorations -->
+        <div class="floating-cheese" style="top: 15%; left: 10%; animation-delay: 0s;">🧀</div>
+        <div class="floating-cheese" style="top: 25%; right: 15%; animation-delay: 1s;">🧀</div>
+        <div class="floating-cheese" style="bottom: 20%; left: 20%; animation-delay: 2s;">🧀</div>
+        <div class="floating-cheese" style="bottom: 30%; right: 10%; animation-delay: 3s;">🧀</div>
+        <div class="floating-cheese" style="top: 60%; left: 5%; animation-delay: 1.5s;">🧀</div>
+
+        <h1 class="reveal">
+            cheese boy<br>
+            <span class="highlight">Calvin</span>
+        </h1>
+        <p class="hero-subtitle reveal">
+            creating content that hits different. warm, unbothered, and always serving looks.
+        </p>
+        <div class="hero-cta reveal">
+            <a href="https://www.tiktok.com/@shehatescalvin" target="_blank" class="btn btn-primary">
+                Follow on TikTok →
+            </a>
+            <a href="#content" class="btn btn-outline">
+                Explore Content
+            </a>
+        </div>
+    </section>
+
+    <!-- Marquee -->
+    <div class="marquee">
+        <div class="marquee-content">
+            <span>she hates calvin</span> <span>•</span> <span>cheese boy Calvin</span> <span>•</span> <span>warm vibes only</span> <span>•</span> <span>unbothered</span> <span>•</span> <span>she hates calvin</span> <span>•</span> <span>cheese boy Calvin</span> <span>•</span> <span>warm vibes only</span> <span>•</span> <span>unbothered</span> <span>•</span>
+            <span>she hates calvin</span> <span>•</span> <span>cheese boy Calvin</span> <span>•</span> <span>warm vibes only</span> <span>•</span> <span>unbothered</span> <span>•</span> <span>she hates calvin</span> <span>•</span> <span>cheese boy Calvin</span> <span>•</span> <span>warm vibes only</span> <span>•</span> <span>unbothered</span> <span>•</span>
+        </div>
+    </div>
+
+    <!-- Content Grid -->
+    <section class="content-grid" id="content">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Jobs Worked</h2>
+                <p>my work journey and experiences</p>
+            </div>
+            <div class="grid">
+                <div class="card reveal">
+                    <div class="video-container">
+                        <video src="./videos/engen.mp4" muted loop playsinline></video>
+                        <div class="video-overlay">
+                            <div class="video-play-btn">▶</div>
+                            <span class="video-label">Engen</span>
+                        </div>
+                    </div>
+                    <h3>Engen</h3>
+                    <p>Fueling the vibe. Handling service, customer interactions, and keeping the energy high on the shift.</p>
+                </div>
+                <div class="card reveal">
+                    <div class="video-container">
+                        <video src="./videos/mr-d.mp4" muted loop playsinline></video>
+                        <div class="video-overlay">
+                            <div class="video-play-btn">▶</div>
+                            <span class="video-label">Mr. D</span>
+                        </div>
+                    </div>
+                    <h3>Mr. D</h3>
+                    <p>On the move. Navigating the streets, delivering happiness, and bringing that fast-paced hustle.</p>
+                </div>
+                <div class="card reveal">
+                    <div class="video-container">
+                        <video src="./videos/orthodontist.mp4" muted loop playsinline></video>
+                        <div class="video-overlay">
+                            <div class="video-play-btn">▶</div>
+                            <span class="video-label">Orthodontist</span>
+                        </div>
+                    </div>
+                    <h3>Orthodontist</h3>
+                    <p>Bracing for impact. Assisting in creating perfect smiles, working with patients, and keeping things organized.</p>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 3.5rem;" class="reveal">
+                <a href="#hire-section" class="btn btn-primary" style="background: var(--accent); color: white;">Cheeseboy for Hire 💼</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hire Section (Glassmorphic) -->
+    <section class="content-grid" id="hire-section" style="background: var(--cream); border-top: 3px solid var(--charcoal); display: none;">
+        <div class="container" style="max-width: 650px;">
+            <div class="section-header reveal">
+                <h2>Hire Cheeseboy Calvin 🧀</h2>
+                <p>Submit job offers, track statuses, and check in</p>
+            </div>
+            
+            <div class="glass-panel reveal" id="hire-auth-container">
+                <!-- Sign In Card -->
+                <div id="signin-card">
+                    <h3 style="margin-bottom: 1.5rem; text-align: center;">Sign In</h3>
+                    <form id="signin-form" onsubmit="handleSignIn(event)">
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" id="signin-email" required placeholder="your.email@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="signin-password" required placeholder="••••••••">
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; margin-bottom: 1.5rem;">
+                            <a href="#" onclick="showForgotPassword(event)" style="color: var(--accent); font-size: 0.9rem; font-weight: 600; text-decoration: none;">Forgot password?</a>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Sign In →</button>
+                    </form>
+                    <p style="margin-top: 1.5rem; text-align: center; font-size: 0.95rem;">
+                        Don't have an account? <a href="#" onclick="toggleAuthForms(event, 'signup')" style="color: var(--accent); font-weight: 700; text-decoration: underline;">Sign Up</a>
+                    </p>
+                </div>
+
+                <!-- Sign Up Card (hidden by default) -->
+                <div id="signup-card" style="display: none;">
+                    <h3 style="margin-bottom: 1.5rem; text-align: center;">Create Account</h3>
+                    <form id="signup-form" onsubmit="handleSignUp(event)">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="signup-name" required placeholder="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" id="signup-email" required placeholder="john@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="signup-phone" required placeholder="082 123 4567">
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="signup-password" required placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1.5rem;">Register Account →</button>
+                    </form>
+                    <p style="margin-top: 1.5rem; text-align: center; font-size: 0.95rem;">
+                        Already have an account? <a href="#" onclick="toggleAuthForms(event, 'signin')" style="color: var(--accent); font-weight: 700; text-decoration: underline;">Sign In</a>
+                    </p>
+                </div>
+
+                <!-- Forgot Password / OTP Card (hidden by default) -->
+                <div id="forgot-card" style="display: none;">
+                    <h3 style="margin-bottom: 1.5rem; text-align: center;" id="forgot-title">Recover Account</h3>
+                    
+                    <!-- Step 1: Send OTP -->
+                    <form id="forgot-step1-form" onsubmit="handleSendOtp(event)">
+                        <div class="form-group">
+                            <label>Enter Registered Email</label>
+                            <input type="email" id="forgot-email" required placeholder="your.email@example.com">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">Send OTP Code 🔑</button>
+                    </form>
+
+                    <!-- Step 2: Verify OTP & New Password (hidden by default) -->
+                    <form id="forgot-step2-form" onsubmit="handleResetPassword(event)" style="display: none;">
+                        <div class="form-group">
+                            <label>Enter 6-digit OTP Code</label>
+                            <input type="text" id="forgot-otp" required maxLength="6" placeholder="123456" style="text-align: center; letter-spacing: 0.5rem; font-size: 1.25rem;">
+                        </div>
+                        <div class="form-group">
+                            <label>Enter New Password</label>
+                            <input type="password" id="forgot-new-password" required placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1.5rem;">Reset Password & Sign In</button>
+                    </form>
+                    
+                    <p style="margin-top: 1.5rem; text-align: center; font-size: 0.95rem;">
+                        <a href="#" onclick="toggleAuthForms(event, 'signin')" style="color: var(--soft-gray); font-weight: 600; text-decoration: none;">← Back to Sign In</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Jobs Dashboard (Glassmorphic) (hidden by default) -->
+            <div class="glass-panel reveal" id="hire-dashboard-container" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 2px dashed var(--charcoal); padding-bottom: 1rem;">
+                    <div>
+                        <span style="font-size: 0.85rem; color: var(--soft-gray); font-weight: 700;">WELCOME BACK!</span>
+                        <h3 id="dashboard-user-name">Employer</h3>
+                    </div>
+                    <button class="btn btn-outline" onclick="handleLogOut()" style="padding: 0.6rem 1.2rem; border-radius: 20px; font-size: 0.85rem; box-shadow: 2px 2px 0 var(--charcoal);">Log Out 🚪</button>
+                </div>
+
+                <!-- Post Job Form -->
+                <div style="margin-bottom: 3rem;">
+                    <h4 style="margin-bottom: 1.2rem; font-size: 1.3rem;">Post a Job for Calvin</h4>
+                    <form id="job-form" onsubmit="handleSubmitJob(event)">
+                        <div class="form-group">
+                            <label>Job Title</label>
+                            <input type="text" id="job-title" required placeholder="e.g. Social Media Promo, Delivery Driver">
+                        </div>
+                        <div class="form-group">
+                            <label>Requirements & Details</label>
+                            <textarea id="job-requirements" required rows="4" placeholder="Describe what the job requires, timing, location, and compensation..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; background: var(--accent); color: white;">Submit Job Offer ✉</button>
+                    </form>
+                </div>
+
+                <!-- Submitted Jobs List -->
+                <div>
+                    <h4 style="margin-bottom: 1.2rem; font-size: 1.3rem;">Your Submitted Jobs</h4>
+                    <div id="jobs-list" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        <p style="text-align: center; color: var(--soft-gray);" id="no-jobs-text">No jobs submitted yet. Offer me something cool!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TikTok Section -->
+    <section class="tiktok-section" id="tiktok">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Latest from TikTok</h2>
+                <p>catch the newest drops</p>
+            </div>
+            <div class="tiktok-embed reveal">
+                <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@shehatescalvin" data-unique-id="shehatescalvin" data-embed-type="creator" style="max-width: 500px; min-width: 288px;">
+                    <section>
+                        <a target="_blank" href="https://www.tiktok.com/@shehatescalvin?refer=creator_embed">@shehatescalvin</a>
+                    </section>
+                </blockquote>
+                <script async src="https://www.tiktok.com/embed.js"></script>
+            </div>
+            <p class="tiktok-handle reveal">
+                <a href="https://www.tiktok.com/@shehatescalvin" target="_blank">@shehatescalvin</a>
+            </p>
+        </div>
+    </section>
+
+    <!-- Connect -->
+    <section class="content-grid" id="connect" style="background: var(--warm-white); border-top: 3px solid var(--charcoal);">
+        <div class="container" style="text-align: center;">
+            <div class="section-header reveal">
+                <h2>Let's Connect</h2>
+                <p>collabs, questions, or just saying hi</p>
+            </div>
+            <div class="hero-cta reveal" style="justify-content: center;">
+                <a href="https://www.tiktok.com/@shehatescalvin" target="_blank" class="btn btn-primary">TikTok</a>
+                <a href="https://www.instagram.com/calvinmotion_?igsh=OTBmN2djY2x5eDBn&utm_source=qr" target="_blank" class="btn btn-outline">Instagram</a>
+                <a href="mailto:hello@shehatescalvin.com" class="btn btn-outline" onclick="alert('Email coming soon!'); return false;">Email</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-logo">🧀 shehatescalvin</div>
+        <ul class="footer-links">
+            <li><a href="https://www.tiktok.com/@shehatescalvin" target="_blank">TikTok</a></li>
+            <li><a href="https://www.instagram.com/calvinmotion_?igsh=OTBmN2djY2x5eDBn&utm_source=qr" target="_blank">Instagram</a></li>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#content">Content</a></li>
+        </ul>
+        <p class="copyright">© 2026 shehatescalvin. Cheese boy Calvin.</p>
+    </footer>
+
+    <script>
+        // Custom cursor - Playful cheese emoji
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        
+        // Add the cheese emoji to the cursor dot
+        cursorDot.innerHTML = '🧀';
+        
+        window.addEventListener('mousemove', (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+            
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+            
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: 'forwards' });
+        });
+
+        // Hover effect on links
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => cursorOutline.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursorOutline.classList.remove('hover'));
+        });
+
+        // Scroll reveal
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const href = this.getAttribute('href');
+                if (href === '#') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    return;
+                }
+                try {
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                } catch (err) {
+                    console.error('Invalid selector:', href);
+                }
+            });
+        });
+
+        // Parallax effect for floating cheese
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            document.querySelectorAll('.floating-cheese').forEach((cheese, index) => {
+                const speed = 0.5 + (index * 0.1);
+                cheese.style.transform = `translateY(${scrolled * speed}px) rotate(${scrolled * 0.05}deg)`;
+            });
+        });
+
+        // Play/Pause videos on click
+        document.querySelectorAll('.video-container').forEach(container => {
+            const video = container.querySelector('video');
+            const playBtn = container.querySelector('.video-play-btn');
+            
+            container.addEventListener('click', () => {
+                if (video.paused) {
+                    // Pause other videos
+                    document.querySelectorAll('.video-container video').forEach(v => {
+                        if (v !== video) {
+                            v.pause();
+                            const otherPlayBtn = v.closest('.video-container').querySelector('.video-play-btn');
+                            otherPlayBtn.style.display = 'flex';
+                            otherPlayBtn.innerHTML = '▶';
+                            otherPlayBtn.style.opacity = '1';
+                        }
+                    });
+                    video.play();
+                    playBtn.innerHTML = '❚❚';
+                    // Optional: hide play button after a short delay during play
+                    setTimeout(() => {
+                        if (!video.paused) {
+                            playBtn.style.opacity = '0';
+                        }
+                    }, 800);
+                } else {
+                    video.pause();
+                    playBtn.innerHTML = '▶';
+                    playBtn.style.opacity = '1';
+                }
+            });
+
+            // Show play button again on hover if playing
+            container.addEventListener('mouseenter', () => {
+                playBtn.style.opacity = '1';
+            });
+            container.addEventListener('mouseleave', () => {
+                if (!video.paused) {
+                    playBtn.style.opacity = '0';
+                }
+            });
+        });
+
+        // ==========================================
+        // Cheeseboy for Hire Backend Integration
+        // ==========================================
+        const API_URL = 'http://localhost:3000/api';
+        let currentUser = null;
+        let activeResetToken = null;
+
+        // Visual helper for Sandbox mode OTP
+        function showSandboxOtpHelper(otp) {
+            const helper = document.createElement('div');
+            helper.style.position = 'fixed';
+            helper.style.bottom = '20px';
+            helper.style.right = '20px';
+            helper.style.background = 'var(--cheese)';
+            helper.style.border = '3px solid var(--charcoal)';
+            helper.style.borderRadius = '16px';
+            helper.style.padding = '1.5rem';
+            helper.style.boxShadow = '6px 6px 0px var(--charcoal)';
+            helper.style.zIndex = '10000';
+            helper.style.fontFamily = 'Fredoka, sans-serif';
+            helper.style.textAlign = 'center';
+            helper.innerHTML = `
+                <h4 style="margin-bottom: 0.5rem;">🔑 Sandbox OTP Helper</h4>
+                <p style="font-size: 0.9rem; margin-bottom: 0.8rem;">Since you are in local sandbox mode, your OTP is:</p>
+                <div style="font-size: 1.5rem; font-weight: bold; background: white; padding: 0.5rem; border: 2px solid var(--charcoal); border-radius: 8px; margin-bottom: 0.8rem; letter-spacing: 0.2rem;">${otp}</div>
+                <button onclick="this.parentElement.remove()" class="btn btn-outline" style="padding: 0.4rem 1rem; font-size: 0.8rem; border-radius: 12px; box-shadow: 2px 2px 0 var(--charcoal);">Dismiss</button>
+            `;
+            document.body.appendChild(helper);
+        }
+
+        // Toggle visibility of Sign In / Sign Up cards
+        function toggleAuthForms(event, type) {
+            if (event) event.preventDefault();
+            document.getElementById('signin-card').style.display = type === 'signin' ? 'block' : 'none';
+            document.getElementById('signup-card').style.display = type === 'signup' ? 'block' : 'none';
+            document.getElementById('forgot-card').style.display = type === 'forgot' ? 'block' : 'none';
+        }
+
+        // Show Forgot Password step
+        function showForgotPassword(event) {
+            if (event) event.preventDefault();
+            toggleAuthForms(null, 'forgot');
+            document.getElementById('forgot-step1-form').style.display = 'block';
+            document.getElementById('forgot-step2-form').style.display = 'none';
+            document.getElementById('forgot-title').innerText = 'Recover Account';
+        }
+
+        // Perform Sign Up
+        async function handleSignUp(e) {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const phone = document.getElementById('signup-phone').value;
+            const password = document.getElementById('signup-password').value;
+
+            try {
+                const res = await fetch(`${API_URL}/auth/signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, phone, password })
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Registration failed.');
+
+                alert(data.message);
+                document.getElementById('signup-form').reset();
+                checkAuthStatus();
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+
+        // Perform Sign In
+        async function handleSignIn(e) {
+            e.preventDefault();
+            const email = document.getElementById('signin-email').value;
+            const password = document.getElementById('signin-password').value;
+
+            try {
+                const res = await fetch(`${API_URL}/auth/signin`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Sign in failed.');
+
+                document.getElementById('signin-form').reset();
+                checkAuthStatus();
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+
+        // Perform Log Out
+        async function handleLogOut() {
+            try {
+                const res = await fetch(`${API_URL}/auth/logout`, { method: 'POST' });
+                const data = await res.json();
+                alert(data.message);
+                checkAuthStatus();
+            } catch (err) {
+                console.error('Logout error:', err);
+            }
+        }
+
+        // Send OTP
+        async function handleSendOtp(e) {
+            e.preventDefault();
+            const email = document.getElementById('forgot-email').value;
+
+            try {
+                const res = await fetch(`${API_URL}/auth/forgot-password`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to send OTP.');
+
+                alert(data.message);
+                if (data.sandboxOtp) {
+                    showSandboxOtpHelper(data.sandboxOtp);
+                }
+
+                // Show step 2
+                document.getElementById('forgot-step1-form').style.display = 'none';
+                document.getElementById('forgot-step2-form').style.display = 'block';
+                document.getElementById('forgot-title').innerText = 'Verify OTP';
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+
+        // Verify OTP and Reset Password
+        async function handleResetPassword(e) {
+            e.preventDefault();
+            const email = document.getElementById('forgot-email').value;
+            const otpCode = document.getElementById('forgot-otp').value;
+            const password = document.getElementById('forgot-new-password').value;
+
+            try {
+                // 1. Verify OTP first
+                const verifyRes = await fetch(`${API_URL}/auth/verify-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, otpCode })
+                });
+
+                const verifyData = await verifyRes.json();
+                if (!verifyRes.ok) throw new Error(verifyData.error || 'OTP verification failed.');
+
+                activeResetToken = verifyData.resetToken;
+
+                // 2. Perform reset
+                const resetRes = await fetch(`${API_URL}/auth/reset-password`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password, resetToken: activeResetToken })
+                });
+
+                const resetData = await resetRes.json();
+                if (!resetRes.ok) throw new Error(resetData.error || 'Password reset failed.');
+
+                alert(resetData.message);
+                document.getElementById('forgot-step2-form').reset();
+                toggleAuthForms(null, 'signin');
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+
+        // Submit Job
+        async function handleSubmitJob(e) {
+            e.preventDefault();
+            const title = document.getElementById('job-title').value;
+            const requirements = document.getElementById('job-requirements').value;
+
+            try {
+                const res = await fetch(`${API_URL}/jobs`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, requirements })
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to submit job.');
+
+                // Visual alerts of Calvin's auto-response
+                alert(`💼 CALVIN'S RESPONSE:\n"${data.alertResponse}"`);
+                
+                document.getElementById('job-form').reset();
+                fetchJobs();
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+
+        // Fetch user's jobs list
+        async function fetchJobs() {
+            try {
+                const res = await fetch(`${API_URL}/jobs`);
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error);
+
+                const jobsList = document.getElementById('jobs-list');
+                const noJobsText = document.getElementById('no-jobs-text');
+
+                if (data.jobs.length === 0) {
+                    noJobsText.style.display = 'block';
+                    // Remove existing job cards
+                    document.querySelectorAll('.glass-job-card').forEach(el => el.remove());
+                } else {
+                    noJobsText.style.display = 'none';
+                    document.querySelectorAll('.glass-job-card').forEach(el => el.remove());
+
+                    data.jobs.forEach(job => {
+                        const card = document.createElement('div');
+                        card.className = 'glass-job-card';
+                        card.innerHTML = `
+                            <span class="job-status-badge job-status-pending">${job.status}</span>
+                            <h5 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem;">${job.title}</h5>
+                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem; white-space: pre-wrap;">${job.requirements}</p>
+                            <div class="job-auto-response">${job.auto_response}</div>
+                        `;
+                        jobsList.appendChild(card);
+                    });
+                }
+            } catch (err) {
+                console.error('Error fetching jobs:', err);
+            }
+        }
+
+        // Check active Auth status
+        async function checkAuthStatus() {
+            try {
+                const res = await fetch(`${API_URL}/auth/me`);
+                const data = await res.json();
+
+                const authContainer = document.getElementById('hire-auth-container');
+                const dashboardContainer = document.getElementById('hire-dashboard-container');
+
+                if (res.ok && data.user) {
+                    currentUser = data.user;
+                    document.getElementById('dashboard-user-name').innerText = currentUser.name;
+                    authContainer.style.display = 'none';
+                    dashboardContainer.style.block = 'block';
+                    // Fallback to ensure display works correctly
+                    dashboardContainer.style.setProperty('display', 'block', 'important');
+                    fetchJobs();
+                } else {
+                    currentUser = null;
+                    authContainer.style.display = 'block';
+                    dashboardContainer.style.display = 'none';
+                    toggleAuthForms(null, 'signin');
+                }
+            } catch (err) {
+                // If API server is not running yet, show the signin form gracefully
+                document.getElementById('hire-auth-container').style.display = 'block';
+                document.getElementById('hire-dashboard-container').style.display = 'none';
+                toggleAuthForms(null, 'signin');
+            }
+        }
+
+        // Toggle hire section open and scroll to it when button is clicked
+        document.querySelectorAll('a[href="#hire-section"]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = document.getElementById('hire-section');
+                section.style.display = 'block';
+                // Trigger reveal active class
+                setTimeout(() => {
+                    section.classList.add('active');
+                    section.querySelector('.container').classList.add('active');
+                }, 50);
+
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                checkAuthStatus();
+            });
+        });
+
+        // Run initial auth check
+        checkAuthStatus();
+        
+        // Include credentials (cookies) in all fetch requests globally
+        const originalFetch = window.fetch;
+        window.fetch = function(url, options = {}) {
+            options.credentials = options.credentials || 'include';
+            return originalFetch(url, options);
+        };
+    </script>
+</body>
+</html>
