@@ -942,7 +942,7 @@
         <p class="copyright">© 2026 shehatescalvin. Cheese boy Calvin.</p>
     </footer>
 
-    <script>
+    <script type="module">
         // Custom cursor - Playful cheese emoji
         const cursorDot = document.querySelector('.cursor-dot');
         const cursorOutline = document.querySelector('.cursor-outline');
@@ -1068,9 +1068,13 @@
 
         if (SUPABASE_URL && SUPABASE_ANON_KEY && SUPABASE_URL !== 'your_supabase_project_url') {
             try {
-                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                isLocalMode = false;
-                console.log('⚡ Connected to Supabase Cloud Database');
+                if (typeof supabase !== 'undefined') {
+                    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    isLocalMode = false;
+                    console.log('⚡ Connected to Supabase Cloud Database');
+                } else {
+                    console.warn('Supabase SDK not loaded from CDN. Running in Sandbox Mode.');
+                }
             } catch (err) {
                 console.error('Failed to initialize Supabase. Running in Sandbox Mode:', err);
             }
@@ -1465,6 +1469,18 @@
                 checkAuthStatus();
             });
         });
+
+        // Expose functions to window for inline HTML event handlers
+        window.toggleAuthForms = toggleAuthForms;
+        window.showForgotPassword = showForgotPassword;
+        window.handleSignUp = handleSignUp;
+        window.handleSignIn = handleSignIn;
+        window.handleLogOut = handleLogOut;
+        window.handleSendOtp = handleSendOtp;
+        window.handleResetPassword = handleResetPassword;
+        window.handleSubmitJob = handleSubmitJob;
+        window.fetchJobs = fetchJobs;
+        window.checkAuthStatus = checkAuthStatus;
 
         // Run initial auth check
         checkAuthStatus();
